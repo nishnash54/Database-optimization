@@ -83,6 +83,17 @@ bool tableB :: insert()
 	cout<<"Not a valid foreign key\n";
 	return(false);
 }
+void cartesitan()
+{
+	for(int i = 0;i<numA;i++)
+	for(int j = 0;j<numB;j++)
+	if(A[i].ret_pk()==B[j].ret_fk())
+	{
+		cout<<"---------------------\n";
+		A[i].print();
+		B[j].print();
+	}
+}
 int main()
 {
   int num_objA, num_objB;
@@ -95,13 +106,17 @@ int main()
   for(int i = 0;i<num_objA;i++)
   A[i].print();
   
-  cout<<"Enter number of objects in TableA : ";
+  cout<<"Enter number of objects in TableB : ";
   cin>>num_objB;
   for(int i = 0;i<num_objB;i++)
   if(!B[i].insert())
   i--;
-  cout<<"Table A\nPrimary key\tValue\n";
+  cout<<"Table A\nForeign key\tValue\n";
   for(int i = 0;i<num_objB;i++)
   B[i].print();
+  
+  cout<<"\nUsing Cartesian product method\n";
+  cartesitan();
+  
   return(0);
 }
