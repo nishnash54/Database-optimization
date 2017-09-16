@@ -22,6 +22,7 @@ class tableB
 {
 	char foreign_key;
 	int value;
+	tableA *ptr = NULL;
 	public:
 	bool insert();
 	void print()
@@ -31,6 +32,10 @@ class tableB
     char ret_fk()
     {
 		return(foreign_key);
+	}
+	tableA* ret_ptr()
+	{
+		return(ptr);
 	}
 }B[10];
 	
@@ -42,11 +47,14 @@ bool check_primary_key(char pk)
     return(true);
 }
 
-bool check_foreign_key(char fk)
+bool check_foreign_key(char fk, tableA **ptr)
 {
 	for(int i = 0;i<numA;i++)
 	if(A[i].ret_pk()==fk)
-	return(true);
+	{
+		*ptr = &A[i];
+		return(true);
+	}
 	return(false);
 }
 
@@ -73,7 +81,7 @@ bool tableB :: insert()
 	cin>>foreign_key;
 	cout<<"Enter value : ";
 	cin>>value;
-	if(check_foreign_key(foreign_key))
+	if(check_foreign_key(foreign_key, &ptr))
 	{
 		numB++;
 		cout<<"1 Row inserted\n";
@@ -83,17 +91,17 @@ bool tableB :: insert()
 	cout<<"Not a valid foreign key\n";
 	return(false);
 }
-void cartesitan()
+
+void direct_method()
 {
-	for(int i = 0;i<numA;i++)
-	for(int j = 0;j<numB;j++)
-	if(A[i].ret_pk()==B[j].ret_fk())
+	for(int i = 0;i<numB;i++)
 	{
 		cout<<"---------------------\n";
-		A[i].print();
-		B[j].print();
+		B[i].print();
+		(B[i].ret_ptr())->print();
 	}
 }
+
 int main()
 {
   int num_objA, num_objB;
@@ -115,8 +123,7 @@ int main()
   for(int i = 0;i<num_objB;i++)
   B[i].print();
   
-  cout<<"\nUsing Cartesian product method\n";
-  cartesitan();
-  
+  cout<<"Using Direct method\n";
+  direct_method();
   return(0);
 }
