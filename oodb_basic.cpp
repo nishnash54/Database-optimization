@@ -1,62 +1,61 @@
 #include <iostream>
-#include <string.h>
-#include <fstream>
-#include <time.h>
 using namespace std;
-int numA, numB;
+int numA = 0, numB = 0;
 
 class tableA
 {
-  char primary_key[20];
+  char primary_key;
   int value;
   public:
-    bool insert(char key[20], int val);
+    bool insert();
     void print()
     {
       cout<<primary_key<<"\t\t"<<value<<"\n";
     }
-    char* ret_pk()
+    char ret_pk()
     {
 		return(primary_key);
 	}
-}A[1000];
+}A[10];
 
 class tableB
 {
-	char foreign_key[20];
+	char foreign_key;
 	int value;
 	public:
-	bool insert(char key[20], int val);
+	bool insert();
 	void print()
     {
       cout<<foreign_key<<"\t\t"<<value<<"\n";
     }
-    char* ret_fk()
+    char ret_fk()
     {
 		return(foreign_key);
 	}
-}B[1000];
+}B[10];
 	
-bool check_primary_key(char pk[20])
+bool check_primary_key(char pk)
 {
 	for(int i = 0;i<numA;i++)
-	if(strcmp(A[i].ret_pk(), pk)==0)
+	if(A[i].ret_pk()==pk)
 	return(false);
     return(true);
 }
 
-bool check_foreign_key(char fk[20])
+bool check_foreign_key(char fk)
 {
 	for(int i = 0;i<numA;i++)
-	if(strcmp(A[i].ret_pk(), fk)==0)
+	if(A[i].ret_pk()==fk)
 	return(true);
 	return(false);
 }
 
-bool tableA :: insert(char key[20], int val)
+bool tableA :: insert()
 {
-      strcpy(primary_key, key);
-      value = val;
+      cout<<"Enter key : ";
+      cin>>primary_key;
+      cout<<"Enter value : ";
+      cin>>value;
       if(check_primary_key(primary_key))
       {
         numA++;
@@ -68,10 +67,12 @@ bool tableA :: insert(char key[20], int val)
       return(false);
 }
 
-bool tableB :: insert(char key[20], int val)
+bool tableB :: insert()
 {
-	strcpy(foreign_key,key);
-	value = val;
+	cout<<"Enter key : ";
+	cin>>foreign_key;
+	cout<<"Enter value : ";
+	cin>>value;
 	if(check_foreign_key(foreign_key))
 	{
 		numB++;
@@ -86,7 +87,7 @@ void cartesitan()
 {
 	for(int i = 0;i<numA;i++)
 	for(int j = 0;j<numB;j++)
-	if(strcmp(A[i].ret_pk(), B[j].ret_fk())==0)
+	if(A[i].ret_pk()==B[j].ret_fk())
 	{
 		cout<<"---------------------\n";
 		A[i].print();
@@ -95,42 +96,27 @@ void cartesitan()
 }
 int main()
 {
-  int num_objA, num_objB, val;
-  char key[20];
-  for(int test = 0;test<3;test++)
-  {
-  numA = 0;
-  numB = 0;
-  clock_t start = clock();
-  ifstream fin;
-  fin.open("Data/set_0.txt", ios::in);
-  fin>>num_objA;
+  int num_objA, num_objB;
+  cout<<"Enter number of objects in TableA : ";
+  cin>>num_objA;
   for(int i = 0;i<num_objA;i++)
-  {
-	  fin>>key>>val;
-	  if(!A[i].insert(key, val))
-	  i--;
-  }
+  if(!A[i].insert())
+  i--;
   cout<<"Table A\nPrimary key\tValue\n";
   for(int i = 0;i<num_objA;i++)
   A[i].print();
   
-  fin>>num_objB;
+  cout<<"Enter number of objects in TableB : ";
+  cin>>num_objB;
   for(int i = 0;i<num_objB;i++)
-  {
-	  fin>>key>>val;
-	  if(!B[i].insert(key, val))
-	  i--;
-  }
+  if(!B[i].insert())
+  i--;
   cout<<"Table B\nForeign key\tValue\n";
   for(int i = 0;i<num_objB;i++)
   B[i].print();
   
   cout<<"\nUsing Cartesian product method\n";
   cartesitan();
-  clock_t end = clock();
-  cout<<"Execution time : "<<end - start<<"\n";
-  fin.close();
-  }
+  
   return(0);
 }
