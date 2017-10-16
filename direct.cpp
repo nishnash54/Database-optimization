@@ -1,35 +1,39 @@
 #include <iostream>
+#include <fstream>
+#include <string.h>
+#include <time.h>
 using namespace std;
-int numA = 0, numB = 0;
+
+int numA, numB;
 
 class tableA
 {
-  char primary_key;
+  char primary_key[20];
   int value;
   public:
-    bool insert();
+    bool insert(char key[20], int val);
     void print()
     {
       cout<<primary_key<<"\t\t"<<value<<"\n";
     }
-    char ret_pk()
+    char* ret_pk()
     {
 		return(primary_key);
 	}
-}A[10];
+}A[1000];
 
 class tableB
 {
-	char foreign_key;
+	char foreign_key[20];
 	int value;
 	tableA *ptr = NULL;
 	public:
-	bool insert();
+	bool insert(char key[20], int val);
 	void print()
     {
       cout<<foreign_key<<"\t\t"<<value<<"\n";
     }
-    char ret_fk()
+    char* ret_fk()
     {
 		return(foreign_key);
 	}
@@ -37,20 +41,20 @@ class tableB
 	{
 		return(ptr);
 	}
-}B[10];
+}B[1000];
 	
-bool check_primary_key(char pk)
+bool check_primary_key(char pk[20])
 {
 	for(int i = 0;i<numA;i++)
-	if(A[i].ret_pk()==pk)
+	if(strcmp(A[i].ret_pk(), pk)==0)
 	return(false);
     return(true);
 }
 
-bool check_foreign_key(char fk, tableA **ptr)
+bool check_foreign_key(char fk[20], tableA **ptr)
 {
 	for(int i = 0;i<numA;i++)
-	if(A[i].ret_pk()==fk)
+	if(strcmp(A[i].ret_pk(), fk)==0)
 	{
 		*ptr = &A[i];
 		return(true);
@@ -58,12 +62,10 @@ bool check_foreign_key(char fk, tableA **ptr)
 	return(false);
 }
 
-bool tableA :: insert()
+bool tableA :: insert(char key[20], int val)
 {
-      cout<<"Enter key : ";
-      cin>>primary_key;
-      cout<<"Enter value : ";
-      cin>>value;
+      strcpy(primary_key, key);
+      value = val;
       if(check_primary_key(primary_key))
       {
         numA++;
@@ -75,12 +77,10 @@ bool tableA :: insert()
       return(false);
 }
 
-bool tableB :: insert()
+bool tableB :: insert(char key[20], int val)
 {
-	cout<<"Enter key : ";
-	cin>>foreign_key;
-	cout<<"Enter value : ";
-	cin>>value;
+	strcpy(foreign_key, key);
+	value = val;
 	if(check_foreign_key(foreign_key, &ptr))
 	{
 		numB++;
@@ -104,26 +104,43 @@ void direct_method()
 
 int main()
 {
-  int num_objA, num_objB;
-  cout<<"Enter number of objects in TableA : ";
-  cin>>num_objA;
+  for(int test = 0;test<3;test++)
+  {
+  numA = 0;
+  numB = 0;
+  int num_objA, num_objB, val;
+  char key[20];
+  ifstream fin;
+  fin.open("Data/set_0.txt", ios::in);
+  clock_t start = clock();
+  fin>>num_objA;
   for(int i = 0;i<num_objA;i++)
-  if(!A[i].insert())
-  i--;
+  {
+	  fin>>key>>val;
+	  if(!A[i].insert(key, val))
+	  i--;
+  }
   cout<<"Table A\nPrimary key\tValue\n";
   for(int i = 0;i<num_objA;i++)
   A[i].print();
   
-  cout<<"Enter number of objects in TableB : ";
-  cin>>num_objB;
+  fin>>num_objB;
+  cout<<num_objB;
   for(int i = 0;i<num_objB;i++)
-  if(!B[i].insert())
-  i--;
+  {
+	  fin>>key>>val;
+	  if(!B[i].insert(key, val))
+	  i--;
+  }
   cout<<"Table B\nForeign key\tValue\n";
   for(int i = 0;i<num_objB;i++)
   B[i].print();
   
   cout<<"Using Direct method\n";
   direct_method();
+  clock_t end = clock();
+  cout<<"\nExecution time : "<<end - start<<"\n";
+  fin.close();
+  }
   return(0);
 }
