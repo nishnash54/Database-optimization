@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string.h>
-#include <stdlib.h>
 #include <fstream>
 #include <time.h>
 using namespace std;
@@ -98,12 +97,15 @@ int main()
 {
   int num_objA, num_objB, val;
   char key[20];
+  ofstream fout;
+  fout.open("Data/exetime_oodb.txt", ios::out);
   for(int set = 0; set<7;set++)
   {
 	  char filename[] = "Data/set_";
 	  strcat(filename, setname[set]);
 	  strcat(filename, ".txt");
 	  cout<<filename<<"\n";
+	  fout<<filename<<"\n";
   for(int test = 0;test<10;test++)
   {
   numA = 0;
@@ -137,9 +139,12 @@ int main()
   cout<<"\nUsing Cartesian product method\n";*/
   cartesitan();
   clock_t end = clock();
-  cout<<"Execution time : "<<end - start<<"\n";
+  float tim = end - start;
+  fout<<tim<<"\n";
+  cout<<"Execution time : "<<tim<<"\n";
   fin.close();
   }
   }
+  fout.close();
   return(0);
 }
