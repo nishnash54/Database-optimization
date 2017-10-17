@@ -98,7 +98,7 @@ int main()
   int num_objA, num_objB, val;
   char key[20];
   ofstream fout;
-  fout.open("Data/exetime_oodb.txt", ios::out);
+  fout.open("Data/extime_oodb.txt", ios::out);
   for(int set = 0; set<7;set++)
   {
 	  char filename[] = "Data/set_";
