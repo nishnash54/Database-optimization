@@ -22,10 +22,13 @@ for i in range(7):
 print(time_oodb)
 print(time_direct)
 
-plot = plt.figure()
-ax = plt.subplot(111)
-ax.bar([each-0.1 for each in lst], time_oodb, width=0.2, color='r', align='center')
-ax.bar([each+0.1 for each in lst], time_direct, width=0.2, color='g', align='center')
+f, ax = plt.subplots(3, sharex=True)
+ax[0].bar([each-0.1 for each in lst[:2]], time_oodb[:2], width=0.2, color='r', align='center')
+ax[0].bar([each+0.1 for each in lst[:2]], time_direct[:2], width=0.2, color='g', align='center')
+ax[1].bar([each-0.1 for each in lst[2:4]], time_oodb[2:4], width=0.2, color='r', align='center')
+ax[1].bar([each+0.1 for each in lst[2:4]], time_direct[2:4], width=0.2, color='g', align='center')
+ax[2].bar([each-0.1 for each in lst[4:]], time_oodb[4:], width=0.2, color='r', align='center')
+ax[2].bar([each+0.1 for each in lst[4:]], time_direct[4:], width=0.2, color='g', align='center')
 plt.show()
 
 file1.close()
